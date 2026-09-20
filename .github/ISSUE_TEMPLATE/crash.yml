@@ -1,0 +1,35 @@
+name: Crash or build failure
+description: The app stopped, or the build did not finish
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        There is no crash reporter in this build, so logcat is the only channel.
+        If a particular set of numbers makes the app stop, say roughly what they
+        are — how many rows, how many decimals, whether a serving or packet weight
+        was entered. Do not attach a screenshot of a reading you would not want
+        traced to a purchase.
+  - type: textarea
+    id: repro
+    attributes:
+      label: What you did
+      placeholder: |
+        1. Typed the per-100 column, seven rows
+        2. Tapped "Read the label"
+        3. Turned on "Compare a second packet" and filled packet B
+        4. App closed
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Relevant logcat lines
+      description: FATAL EXCEPTION block, or the gradle failure if the build broke.
+      render: text
+  - type: textarea
+    id: env
+    attributes:
+      label: Device, Android version, commit
+    validations:
+      required: true

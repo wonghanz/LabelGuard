@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LabelGuard — offline nutrition label checker for Android: compare any two food labels per 100 g, see what %RI really means, and test a packet's own claims</title>
+<meta name="description" content="LabelGuard is a free, MIT-licensed Android app that puts every number on a nutrition label onto the basis the official comparison thresholds are defined on — per 100 g or 100 ml — so two packets can actually be compared. It prints the rounding interval the law allows each declared figure, explains what the % reference intake on a pack assumes, tests front-of-pack wordings like low fat, high in protein, sugar free and natural against their published conditions, and says plainly which claims no nutrition table can ever settle. No score, no healthy-or-unhealthy verdict, no product database, no photo upload, no account and no API key needed; the offline arithmetic works in airplane mode.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Canonical is where this file is intended to live. GitHub Pages is not enabled
+     on this repository yet, so until it is, this URL resolves nowhere. Deliberately
+     no og:image: there is no banner asset in the repo, and declaring one that 404s
+     is worse than declaring none. -->
+<link rel="canonical" href="https://wonghanz.github.io/LabelGuard/">
+<meta name="theme-color" content="#07161A">
+<meta name="keywords" content="nutrition label checker android, compare food labels per 100g, what does %RI mean on a label, remove serving size confusion, low fat claim definition, sugar free claim threshold, no added sugars meaning, high in protein requirement, is this food healthy app, food label reader offline, nutrition facts comparison, exif of the supermarket, added sugar per 100g, salt sodium conversion 2.5, open source android nutrition">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LabelGuard">
+<meta property="og:title" content="LabelGuard — what does this packet actually say, on one basis?">
+<meta property="og:description" content="Normalises any nutrition table to per 100 g, per serving and per packet, prints the rounding interval each declared figure licenses, and checks the front-of-pack wording against its published condition. No score, no health verdict, no upload.">
+<meta property="og:url" content="https://wonghanz.github.io/LabelGuard/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LabelGuard — offline nutrition label reader for Android">
+<meta name="twitter:description" content="Two packets can print the same true figure and read differently. LabelGuard moves them onto one basis and shows the rounding behind each number.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LabelGuard",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Android 8.0 and newer",
+  "description": "Open-source Android app that recalculates a food label onto shared comparison bases and audits its own claims. Normalises every declared row onto per 100 g or 100 ml, the stated serving and the whole packet; derives each figure's rounding interval from the number of decimals the pack printed, including the rule that a declared zero means at or below the contains-no threshold; applies the published per-100 comparison cut-offs for fat, saturates, sugars, salt and fibre, and prints on-the-line rather than resolving an interval that straddles a cut-off; tests front-of-pack wordings against the conditions laid down for them and states which claims no nutrition table can settle; cross-checks the pack's own kJ against its own kcal under both the exact and the 4.2 convention, and the macronutrients against the declared energy. Requests no runtime permission, contains no product database, performs no photo or barcode lookup, and ships without an API key.",
+  "url": "https://wonghanz.github.io/LabelGuard/",
+  "codeRepository": "https://github.com/wonghanz/LabelGuard",
+  "programmingLanguage": ["Kotlin", "Jetpack Compose"],
+  "softwareVersion": "0.1.0",
+  "datePublished": "2026-09-20",
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/MIT",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "normalises any nutrition table to per 100 g, per serving and per packet",
+    "rounding interval for each figure, derived from the precision the pack printed",
+    "published per-100 comparison bands, with on-the-line instead of a guess",
+    "front-of-pack claims tested against their published conditions",
+    "kJ against kcal and macros against declared energy cross-checks",
+    "two-packet comparison that names where they cannot be told apart",
+    "no score, no health verdict, no share of an individual's needs",
+    "no runtime permission requested, no telemetry, and no product database"
+  ],
+  "softwareRequirements": ["Android 8.0 (API 26) or newer"],
+  "publisher": { "@type": "Person", "name": "wonghanz", "url": "https://github.com/wonghanz" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can LabelGuard tell me if a food is healthy?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No, and it will not try. It applies published per-100 g comparison thresholds and reports where a figure sits against them, which is a claim about the packet. Whether a food is healthy depends on the rest of a person's diet and their body, neither of which this app knows, stores, or is entitled to infer from one packet." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does LabelGuard convert everything to per 100 g?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Because the official comparison cut-offs are defined per 100 g or per 100 ml and nowhere else, and a pack that prints only a per-serving column can report the same true figure so it reads smaller. A cereal at 6.6 g of sugars in a 30 g serving is 22 g per 100 g, which is where the high-sugars line of 22.5 g starts to come into view. The conversion is arithmetic the packet declines to do for you." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does %RI on a food label mean?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Percentage of reference intake: a share of the amounts set out for an average adult reference diet of 2,000 kcal, being 8,400 kJ, with 70 g fat, 20 g saturates, 90 g total sugars, 50 g protein and 6 g salt. It is a labelling convention chosen for comparison between products. It is not a target for any particular person, and it was never measured against one, which is the part the pack usually leaves out." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does LabelGuard print a range instead of one number?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Because declared values are rounded, and the rules that allow it are published: energy to whole kJ and kcal, and fat, saturates, carbohydrate, sugars, protein and salt to the nearest 0.1 g, except that 0.2 g may be used below 1.5 g per 100 g. The app reads the quantum off how many decimals the pack actually printed, so 0.28 is held to plus or minus 0.005 while 0.4 on a low line is held to plus or minus 0.1." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does a printed 0 g of sugar not mean no sugar?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A value declared as zero is permitted wherever the amount does not exceed the contains-no threshold, which is 0.5 g per 100 g for fat and for sugars and 0.1 g per 100 g for saturates. So a 0 on the sugars row licenses anything up to 0.5 g per 100 g. LabelGuard prints that interval and says which rule produced it." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does on the line mean in LabelGuard?",
+      "acceptedAnswer": { "@type": "Answer", "text": "That the interval a declared figure licenses crosses one of the comparison cut-offs, so the figure cannot honestly be placed in a band. A pack printing 22.5 g of sugars per 100 g may hold anywhere between 22.4 and 22.6, and the high-sugars line is 22.5. Choosing a side would be the app guessing where the labelling rules say a range is legitimate." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can it scan a label photo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. This build declares no camera permission and has no vision call, so there is no optical recognition to be wrong about. You type the rows you can read. That is slower and it is also the only way to be certain a digit was not misread by a model, which matters more here than convenience." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can LabelGuard compare two products and pick the better one?",
+      "acceptedAnswer": { "@type": "Answer", "text": "It compares them row by row on a shared per-100 basis and stops there. Picking a winner needs a goal, and a goal needs a person, which this app neither has nor stores. Where the two readings overlap once each packet's permitted rounding is counted, the row says the two cannot be told apart on that line, which is frequently the true answer." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does LabelGuard work with US, UK or EU labels?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The normalisation, unit conversions, rounding tolerances and cross-checks work on any of them, and US per-serving panels simply move onto 100 g the same way. The bands and the claim conditions are the published UK and EU sets, so a US label will produce fewer findings and different reference figures. Anything the app cannot match is reported as unchecked rather than as fine." }
+    },
+    {
+      "@type": "Question",
+      "name": "Will it store what I buy?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Nothing is written to disk: not the packet, not the reading, not a history, and there is no product database behind it. The form is cleared when the app leaves the foreground. A record of what somebody eats is the sensitive part of this idea, so that is the part that was left out." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an account or an API key?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Neither. Normalisation, tolerances, bands, claim checks, cross-checks and comparison all work offline in airplane mode with no configuration. A base URL, model name and key only unlock the optional plain-words pass, which sends the figures and not the product." }
+    }
+  ]
+}
+</script>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+         background: #07161A; color: #F2F8F9; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 64px 22px 80px; }
+  h1 { font-size: clamp(29px, 5.6vw, 41px); line-height: 1.16; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .lede { font-size: 19px; color: #9FB6BB; margin: 0 0 30px; }
+  .mark { display: inline-block; width: 32px; height: 32px; border-radius: 8px;
+          border: 2.5px solid #4FE0E4; position: relative; margin-bottom: 18px; }
+  .mark::after { content: ""; position: absolute; left: 8px; top: 8px; width: 13px; height: 2.6px;
+                 border-radius: 2px; background: #4FE0E4;
+                 box-shadow: 0 6.5px 0 #4FE0E4, 3.5px 13px 0 #4FE0E4; }
+  .mark::before { content: ""; position: absolute; right: 5px; top: 5px; width: 2.2px; height: 18px;
+                  border-radius: 2px; background: #4FE0E4; opacity: .8; }
+  .cta { display: inline-block; background: #0B6C72; color: #fff; text-decoration: none;
+         padding: 13px 24px; border-radius: 999px; font-weight: 600; margin: 0 10px 14px 0; }
+  .cta.alt { background: transparent; border: 1px solid #2A4B53; color: #F2F8F9; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .1em; color: #4FE0E4;
+       margin: 46px 0 14px; }
+  h3 { font-size: 17px; margin: 28px 0 8px; }
+  ul { padding-left: 20px; margin: 0; }
+  li { margin-bottom: 9px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 0; border-bottom: 1px solid #163137; vertical-align: top; }
+  th { color: #9FB6BB; font-weight: 500; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; color: #4FE0E4; white-space: nowrap; }
+  .note { background: #10262B; border: 1px solid #1A353C; border-radius: 18px; padding: 18px 20px; margin-top: 26px; }
+  .note strong { color: #E8A33D; }
+  code, pre { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  pre { background: #10262B; border: 1px solid #1A353C; border-radius: 14px; padding: 16px; overflow: auto; }
+  footer { margin-top: 54px; font-size: 14px; color: #9FB6BB; }
+  a { color: #4FE0E4; }
+  .q { font-weight: 600; margin: 22px 0 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="mark" aria-hidden="true"></span>
+  <h1>LabelGuard — what a nutrition label actually says, once every number is on the same basis</h1>
+  <p class="lede">An open source Android app that reads the table off a food packet, moves every
+  figure onto per&nbsp;100&nbsp;g, per serving and per whole packet, shows how much of each declared
+  number the rounding rules actually license, and checks the words on the front against the
+  conditions they have to meet. It never gives the food a score, and never tells you whether
+  it is healthy.</p>
+
+  <p>
+    <a class="cta" href="https://github.com/wonghanz/LabelGuard">Source on GitHub</a>
+    <a class="cta alt" href="https://github.com/wonghanz/LabelGuard/blob/main/README.md">Every figure it can quote</a>
+  </p>
+
+  <h2>The problem in one pair of rows</h2>
+  <table>
+    <tr><th>Packet</th><th>What its table prints</th><th class="n">Sugars, per 100 g</th></tr>
+    <tr><td>A</td><td>22 g per 100 g</td><td class="n">22 g</td></tr>
+    <tr><td>B</td><td>6.6 g per 30 g serving</td><td class="n">22 g</td></tr>
+  </table>
+  <p>Both are telling the truth. Only one of them is easy to reach for, and the packs that
+  print a per-serving column are not usually the ones that improve when it is converted. The
+  official comparison cut-offs are written against 100&nbsp;g and nothing else, so almost every
+  "is that a lot?" call made in a shop is being made across that gap.</p>
+
+  <h2>Four things it works out that a pack leaves to you</h2>
+  <ul>
+    <li><strong>The shared basis.</strong> Type whichever column you have and every row is
+      expressed per 100&nbsp;g/ml, per your stated serving, and across the whole packet — plus
+      what share of the bag that serving actually is.</li>
+    <li><strong>The interval behind the figure.</strong> Declared values are rounded by rule.
+      LabelGuard reads the quantum off how many decimals the pack committed to, so a row printed
+      <code>0.28</code> is held to ±0.005 and a low row printed <code>0.4</code> is held to ±0.1.</li>
+    <li><strong>What the front of the pack can prove.</strong> Low fat, sugar free, high in
+      protein, low salt, low energy and the fibre claims are tested against their published
+      conditions. "Reduced", "light", "natural" and "no added sugars" are reported as unsettled,
+      with the reason.</li>
+    <li><strong>Whether the table contradicts itself.</strong> Its kJ against its own kcal, under
+      both the exact and the long-used 4.2 convention; and its fat, carbohydrate and protein
+      against the declared energy.</li>
+  </ul>
+
+  <h2>The thresholds it applies</h2>
+  <p style="color:#9FB6BB;font-size:15px">Published figures, not ones chosen here. Each can be
+  disputed against its source, and the app's whole audit surface is one file.</p>
+  <table>
+    <tr><th>Nutrient</th><th class="n">Low is</th><th class="n">High above (food)</th><th class="n">High above (drink)</th></tr>
+    <tr><td>Fat</td><td class="n">≤ 3 g</td><td class="n">17.5 g</td><td class="n">9 g</td></tr>
+    <tr><td>Saturates</td><td class="n">≤ 1.5 g</td><td class="n">5 g</td><td class="n">4.5 g</td></tr>
+    <tr><td>Total sugars</td><td class="n">≤ 5 g</td><td class="n">22.5 g</td><td class="n">11 g</td></tr>
+    <tr><td>Salt</td><td class="n">≤ 0.3 g</td><td class="n">1.5 g</td><td class="n">0.75 g</td></tr>
+    <tr><td>Fibre (foods)</td><td class="n">&lt; 3 g</td><td class="n">≥ 3 source · ≥ 6 high</td><td class="n">—</td></tr>
+  </table>
+
+  <div class="note">
+    <p><strong>Salt is where two official numbers disagree.</strong> The claim condition for
+    "low sodium" is 0.1 g of sodium per 100 g, which the same rule writes as <strong>0.25 g of
+    salt</strong>; the widely printed front-of-pack scale calls anything at or under
+    <strong>0.3 g of salt</strong> low. Both are published and they are not the same line, so
+    LabelGuard names the one it used instead of quietly picking the kinder number.</p>
+    <p><strong>And a printed zero is not a zero.</strong> A value declared as 0 is allowed
+    wherever the amount does not exceed the contains-no threshold: 0.5 g per 100 g for fat and
+    for sugars, 0.1 g for saturates. The app prints the licensed interval and the rule behind it,
+    every time a row reads 0.</p>
+  </div>
+
+  <h2>Where it declines to answer</h2>
+  <ul>
+    <li>No score, and no rating out of anything. One number summed over a whole table is the
+      thing that makes a label unreadable.</li>
+    <li>No "healthy" or "unhealthy" — those are statements about a person's whole diet and body.</li>
+    <li>No share of <em>your</em> needs. Reference intakes describe a 2,000 kcal / 8,400 kJ
+      reference diet fixed for labelling, not a target for anybody.</li>
+    <li>No colour on the bands. Low and high are printed in the same grey on purpose: tinting
+      them green and red <em>is</em> the health verdict this app refuses to make.</li>
+    <li>No ingredient list, allergens, additives, origin, BMI, weight-loss claims, and no
+      cycle or period features. The table, and the words on the front, and nothing else.</li>
+    <li>No product database and no barcode lookup — which is the same fact that stops it
+      learning what you buy.</li>
+  </ul>
+
+  <h2>Privacy, stated</h2>
+  <ul>
+    <li>Runtime permissions requested: <strong>none</strong>. Nothing is read from the device at
+      all; every figure is typed by the person holding the packet.</li>
+    <li><code>INTERNET</code> is declared only for the optional pass you configure. With no key
+      entered, no request is ever made.</li>
+    <li>Analytics, crash reporting, ads, attribution SDKs: none. No history is kept, and the
+      form is wiped when the app leaves the foreground.</li>
+    <li>Screenshots are not blocked — a reading is the sort of thing you would want to show
+      somebody, and there is nothing sensitive behind it to protect.</li>
+  </ul>
+
+  <h2>Bring your own key, for two sentences</h2>
+  <p>No default provider, no free tier routed through anyone, no key in the repository. Settings
+  takes a base URL, a model name and a key, stored in this app's private DataStore with
+  <code>allowBackup=false</code>. What goes out is the per-100 figures, their intervals and which
+  claims stood — never a product name, never a shop, never a photo. The prompt forbids
+  recommending the food, calling it healthy, or introducing a figure that was not in the message,
+  and the answer is labelled on screen as generated text rather than part of the arithmetic.
+  Point it at an <code>ollama</code> or <code>llama.cpp</code> endpoint on your own network and
+  even the figures stay local.</p>
+
+  <h2>Frequently asked</h2>
+  <p class="q">Can LabelGuard tell me if a food is healthy?</p>
+  <p>No, and it will not try. It applies published per-100&nbsp;g comparison thresholds and reports
+  where a figure sits against them, which is a claim about the packet. Whether a food is healthy
+  depends on the rest of a diet and a body, neither of which this app knows or stores.</p>
+  <p class="q">Why does LabelGuard convert everything to per 100 g?</p>
+  <p>Because the cut-offs are defined there and nowhere else, and a per-serving column can report
+  the same true figure so it reads smaller. 6.6&nbsp;g in a 30&nbsp;g serving is 22&nbsp;g per
+  100&nbsp;g, which is where the high-sugars line of 22.5&nbsp;g starts to come into view.</p>
+  <p class="q">What does %RI on a food label mean?</p>
+  <p>Percentage of reference intake: a share of the amounts set for an average adult reference diet
+  of 2,000&nbsp;kcal (8,400&nbsp;kJ), with 70&nbsp;g fat, 20&nbsp;g saturates, 90&nbsp;g total
+  sugars, 50&nbsp;g protein and 6&nbsp;g salt. A convention for comparing products on a shelf —
+  not a target, and never measured against you.</p>
+  <p class="q">Why does LabelGuard print a range instead of one number?</p>
+  <p>Because declared values are rounded by published rule: energy to whole kJ and kcal, and fat,
+  saturates, carbohydrate, sugars, protein and salt to the nearest 0.1&nbsp;g, except that
+  0.2&nbsp;g may be used below 1.5&nbsp;g per 100&nbsp;g. The app reads the quantum off the
+  decimals the pack actually printed.</p>
+  <p class="q">Why does a printed 0 g of sugar not mean no sugar?</p>
+  <p>Because a declared zero means at or below the contains-no threshold, which for sugars is
+  0.5&nbsp;g per 100&nbsp;g. A zero on that row licenses anything up to 0.5.</p>
+  <p class="q">What does on the line mean in LabelGuard?</p>
+  <p>That the interval this figure licenses crosses a cut-off, so it cannot honestly be banded.
+  22.5&nbsp;g of sugars may hide 22.4 or 22.6, and the line is 22.5. Picking a side would be the
+  app guessing where the law says a range is legitimate.</p>
+  <p class="q">Can it scan a label photo?</p>
+  <p>No. No camera permission and no vision call in this build, so there is no recognition to be
+  wrong about. You type what you can read — which is also the only way to be sure a digit was not
+  misread by a model.</p>
+  <p class="q">Can LabelGuard compare two products and pick the better one?</p>
+  <p>It puts them side by side on one basis, row by row, and stops there. A winner needs a goal and
+  a goal needs a person. Where the intervals overlap once each pack's rounding is counted, the row
+  says the two cannot be told apart — which is often the true answer.</p>
+  <p class="q">Does LabelGuard work with US, UK or EU labels?</p>
+  <p>The normalisation, conversions, tolerances and cross-checks work on any of them; US per-serving
+  panels move onto 100&nbsp;g the same way. The bands and claim conditions are the published UK and
+  EU sets, so a US label yields fewer findings. Anything it cannot match is reported unchecked, not
+  as fine.</p>
+  <p class="q">Will it store what I buy?</p>
+  <p>No. Nothing is written to disk — not the packet, not the reading, not a history — and the form
+  clears when the app leaves the foreground. A record of what somebody eats is the sensitive part of
+  this idea, so that is the part left out.</p>
+  <p class="q">Do I need an account or an API key?</p>
+  <p>Neither. Every pass works offline in airplane mode. A key only unlocks the optional plain-words
+  rewrite.</p>
+
+  <h2>Build it</h2>
+  <p>Requires JDK 17 and Android SDK platform 35. AGP 8.7.3, Kotlin 2.0.21, Compose BOM
+  2024.12.01. The debug APK is signed with the standard Android debug key.</p>
+  <pre><code>git clone https://github.com/wonghanz/LabelGuard.git
+cd LabelGuard
+export ANDROID_HOME=/path/to/Android/Sdk
+./gradlew --no-daemon :app:assembleDebug</code></pre>
+
+  <footer>
+    MIT licensed · Kotlin and Jetpack Compose · Android 8.0+ ·
+    part of the <a href="https://github.com/wonghanz">CapriGuard</a> tools set ·
+    companion to <a href="https://github.com/wonghanz/LeakGuard">LeakGuard</a> ·
+    <a href="https://github.com/wonghanz/LabelGuard/issues">issues</a>
+  </footer>
+</div>
+</body>
+</html>

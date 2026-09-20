@@ -1,0 +1,41 @@
+name: Wrong reading
+description: A band, a claim verdict, or an interval that does not look right
+labels: ["reading"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        LabelGuard reports where a figure sits against published per-100 thresholds,
+        what the rounding rules license that figure to be, and whether a front-of-pack
+        wording survives its own table. It does not report whether a food is healthy,
+        and it will not. A "wrong reading" here means one of those three outputs is
+        miscalculated or sourced badly — which is a real, fixable bug.
+  - type: textarea
+    id: input
+    attributes:
+      label: What you typed, and what it said
+      description: The unit (g or ml), which column the packet printed, the serving and packet weights if you entered them, and each nutrient figure exactly as you typed it — including how many decimals, because that changes the interval. No need to name the product.
+    validations:
+      required: true
+  - type: textarea
+    id: report
+    attributes:
+      label: The reading, copied with "Copy this reading"
+      description: That text already carries every basis, interval and band, which is what makes a disagreement traceable to one line.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead, and why
+      description: If you believe a threshold or condition is wrong, name the source. Every figure the app can state lives in app/src/main/java/dev/capriguard/labelguard/label/Nutrients.kt and says where it came from.
+    validations:
+      required: false
+  - type: dropdown
+    id: android
+    attributes:
+      label: Android version
+      options: ['11', '12', '13', '14', '15', '16']
+    validations:
+      required: true

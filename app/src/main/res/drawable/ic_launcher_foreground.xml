@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A table with three rows of different lengths, all flush against one vertical
+     line: the whole app in one shape. Rows of unequal size are what a pack prints;
+     the line is the shared basis it puts them on. Vector paths only, so no raster
+     asset is committed, and it reads in one colour because the adaptive monochrome
+     layer reuses this same drawable. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- the panel -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="3.1"
+        android:pathData="M34,26 L74,26 Q80,26 80,32 L80,72 Q80,78 74,78 L34,78 Q28,78 28,72 L28,32 Q28,26 34,26 Z" />
+
+    <!-- the row of names -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="2.6"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.55"
+        android:pathData="M36,37 L54,37" />
+
+    <!-- three declared amounts, deliberately unequal, ending on one basis -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="4.4"
+        android:strokeLineCap="round"
+        android:pathData="M53,48 L72,48" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="4.4"
+        android:strokeLineCap="round"
+        android:pathData="M41,57 L72,57" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="4.4"
+        android:strokeLineCap="round"
+        android:pathData="M47,66 L72,66" />
+
+    <!-- the per-100 line they are moved onto -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="1.9"
+        android:strokeLineCap="round"
+        android:strokeAlpha="0.85"
+        android:pathData="M76,43 L76,71" />
+</vector>
