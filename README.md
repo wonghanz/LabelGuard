@@ -56,15 +56,17 @@ per-energy percentage are computed on the device from what you type.
 Nothing here is invented by this app. Each row is a figure a labelling authority
 publishes, so each row can be argued with.
 
-Comparison cut-offs, **defined per 100 g or per 100 ml and nowhere else**:
+Comparison cut-offs, **defined per 100 g or per 100 ml and nowhere else**. Each row gives
+the food figure and, after the separator, the figure the app applies to a drink — they are
+not the same number, and the app switches on the unit you typed:
 
-| Nutrient | Low is | High above (foods) | High above (drinks) |
-| --- | --- | --- | --- |
-| Fat | ≤ 3 g | 17.5 g | 9 g |
-| Saturates | ≤ 1.5 g | 5 g | 4.5 g |
-| Total sugars | ≤ 5 g | 22.5 g | 11 g |
-| Salt | ≤ 0.3 g | 1.5 g | 0.75 g |
-| Fibre (foods) | < 3 g is not a source | ≥ 3 g a source · ≥ 6 g high | — |
+| Nutrient | Low is | High above |
+| --- | --- | --- |
+| Fat | ≤ 3 g · drink ≤ 1.5 g | 17.5 g · drink 9 g |
+| Saturates | ≤ 1.5 g · drink ≤ 0.75 g | 5 g · drink 4.5 g |
+| Total sugars | ≤ 5 g · drink ≤ 2.5 g | 22.5 g · drink 11 g |
+| Salt | ≤ 0.3 g · drink ≤ 0.3 g | 1.5 g · drink 0.75 g |
+| Fibre | a source at ≥ 3 g · drink ≥ 1.5 g | high at ≥ 6 g · drink ≥ 3 g |
 
 Conditions for the wordings on the front of the pack:
 
